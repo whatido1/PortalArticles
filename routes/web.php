@@ -14,3 +14,22 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Route::get('/admin', function() {
+//     return view('admin');
+// });
+
+// Route::prefix('admin', function() {
+//     Route::resource('articles', 'ArticleController');
+// });
+
+Route::get('admin', function() {
+    return view('admin_template');
+});
+
+Route::prefix('admin')->group(function() {
+    Route::resource('articles', 'ArticleController');
+});
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
