@@ -10,7 +10,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>AdminLTE 3 | Starter</title>
+    <title>{{ $title }} | Admin</title>
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{{asset("bower_components/admin-lte/plugins/fontawesome-free/css/all.min.css")}}">
@@ -18,6 +18,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{asset("bower_components/admin-lte/dist/css/adminlte.min.css")}}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- Dropzone css -->
+    <link rel="stylesheet" href="{{ asset('third-party/dropzone-js/dist/min/basic.min.css') }}">
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -37,7 +39,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0 text-dark">Starter Page</h1>
+                            <h1 class="m-0 text-dark">{{ $title }}</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -52,7 +54,48 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             <!-- Main content -->
             <div class="content">
-                @yield('content')
+                <div class="container-fluid">
+                    @if ($message = Session::get('success'))
+                    <div class="alert alert-success alert-block">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        {!! $message !!}
+                    </div>
+                    @endif
+    
+                    @if ($message = Session::get('error'))
+                    <div class="alert alert-danger alert-block">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        {!! $message !!}
+                    </div>
+                    @endif
+    
+                    @if ($message = Session::get('warning'))
+                    <div class="alert alert-warning alert-block">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        {!! $message !!}
+                    </div>
+                    @endif
+    
+                    @if ($message = Session::get('info'))
+                    <div class="alert alert-info alert-block">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        {!! $message !!}
+                    </div>
+                    @endif
+    
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        {{-- Please check the form below for errors --}}
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+                    @yield('content')
+                </div>
             </div>
             <!-- /.content -->
         </div>
@@ -76,7 +119,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{asset("bower_components/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js")}}"></script>
     <!-- AdminLTE App -->
     <script src="{{asset("bower_components/admin-lte/dist/js/adminlte.min.js")}}"></script>
-    <script src="https://cdn.tiny.cloud/1/u87o99jlyhkfbn7r3b2rxclupq7chraszi0aozn67gd2m50e/tinymce/5/tinymce.min.js"></script>
+    <!-- tiny editor -->
+    <script src="https://cdn.tiny.cloud/1/u87o99jlyhkfbn7r3b2rxclupq7chraszi0aozn67gd2m50e/tinymce/5/tinymce.min.js">
+    </script>
+    {{-- sweetalert --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <!-- dropzone js -->
+    <script src="{{ asset('third-party/dropzone-js/dist/min/dropzone.min.js') }}"></script>
     <script src="{{asset("asset/admin/main.js")}}"></script>
 </body>
 

@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class StoreArticle extends FormRequest
 {
@@ -24,11 +26,17 @@ class StoreArticle extends FormRequest
      */
     public function rules()
     {
+        $this->title = Str::title($this->title);
+        $this->slug = Str::slug($this->slug);
+        // dd($this->request('slug'));
         return [
             'title' => 'required',
-            'slug' => 'required|unique:App\Models\Article,slug',
-            'banner' => 'required|file|mimes:jpeg,png,jpg',
-            'category' => 'required',
+            'slug' => [
+                'required',
+                Rule::unique('\App\Models\Article', 'slug')->ignore($this->slug, 'slug')
+            ],
+            'banner' => 'required_if:banner,image|image|mimes:jpeg,png,jpg',
+            'category' => 'required|numeric',
             'content' => 'required',
         ];
     }

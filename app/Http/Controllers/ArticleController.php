@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreArticle;
+use App\Models\Article;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Image;
 class ArticleController extends Controller
 {
 
@@ -22,7 +27,11 @@ class ArticleController extends Controller
     public function index()
     {
         //
-        echo "Tes";
+        $Articles = \App\Models\Article::orderBy('updated_at', 'desc')->paginate(10);
+        return view('dashboard.admin.article.list')->with([
+            "Articles" => $Articles,
+            "title" => "List Articles"    
+        ]);
     }
 
     /**
@@ -34,7 +43,10 @@ class ArticleController extends Controller
     {
         //
         $Categories = \App\Models\Category::all();
-        return view('dashboard.admin.article.create', ["Categories" => $Categories]);
+        return view('dashboard.admin.article.create')->with([
+            "Categories" => $Categories,
+            "title" => "Create Article"
+        ]);
     }
 
     /**
@@ -45,8 +57,32 @@ class ArticleController extends Controller
      */
     public function store(StoreArticle $request)
     {
-        //
-        // dd($request);
+
+        $originalBanner = $request->file('banner');
+        $thumbBanner = Image::make($originalBanner->getRealPath())->resize('200', null, function( $constraint ) {
+            $constraint->aspectRatio();
+        });
+        $fileName = $request->input('banner');
+        $fileName = $request->validated();
+        $fileExt = $originalBanner->getClientOriginalExtension();
+        $destThumbPath = \public_path('/uploads/featured') ."/200x_". $originalBanner->getClientOriginalName();
+        $path = '/uploads/featured';
+        $thumbBanner->save($destThumbPath);
+        Storage::disk('public')->put($path . '/' . $originalBanner->getClientOriginalName(), File::get($originalBanner));
+
+
+        $Article = new Article();
+        $Article->title = Str::title($request->input('title'));
+        $Article->slug = Str::slug($request->input('slug'));
+        $Article->thumbnail = str_replace('/', '\\', $path . "/200x_" . $originalBanner->getClientOriginalName());
+        $Article->featured_image = str_replace('/', '\\', $path . "/". $originalBanner->getClientOriginalName());
+        $Article->content = $request->input('content');
+        $Article->category_id = $request->input('category');
+        $Article->user_id = Auth::id();
+
+        $Article->save();
+
+        return redirect()->route('articles.index')->with(["success" => "Berhasil menambahkan artikel <strong>". $Article->title ."</strong>"]);
     }
 
     /**
@@ -58,29 +94,41 @@ class ArticleController extends Controller
     public function show($id)
     {
         //
+        echo "show";
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($slug)
     {
-        //
+        return view('dashboard.admin.article.edit')->with([
+            "title" => "Edit Article",
+            "Article" => Article::where("slug", $slug)->firstOrFail(),
+            "Categories" => \App\Models\Category::all()
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreArticle $request, $slug)
     {
         //
+        $Article = \App\Models\Article::where("slug", $slug)->firstOrFail();
+        $oldTitle = $Article->title;
+        $Article->fill($request->all());
+        $Article->category_id = $request->input('category');
+        $Article->save();
+
+        return redirect()->route('articles.index')->with(["success" => "Berhasil mengubah artikel <strong>". $oldTitle ."</strong>"]);
     }
 
     /**
@@ -92,5 +140,10 @@ class ArticleController extends Controller
     public function destroy($id)
     {
         //
+        $Article = \App\Models\Article::find($id);
+        $title = $Article->title;
+        $Article->delete();
+
+        return redirect()->back()->with(["success" => "Berhasil menghapus artikel <strong>{$title}</strong>"]);
     }
 }

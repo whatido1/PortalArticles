@@ -33,46 +33,46 @@ $parentRoute = explode('.' , $parentRoute);
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                 <li class="nav-item has-treeview {{ $parentRoute[0] === 'articles'? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link {{ $parentRoute[0] === 'articles'? 'active' : '' }}">
                         <i class="nav-icon far fa-newspaper"></i>
                         <p>
                             Artikel
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview" style="display: {{$parentRoute[0] === 'articles' ? 'block;' : 'none;' }}">
+                    <ul class="nav nav-treeview bg-gray" style="display: {{$parentRoute[0] === 'articles' ? 'block;' : 'none;' }}">
                         <li class="nav-item">
-                            <a href="pages/UI/general.html" class="nav-link">
-                                <i class="far fa-list-alt nav-icon"></i>
+                            <a href="{{ route('articles.index') }}" class="nav-link {{ Route::currentRouteName() === 'articles.index'? 'active' : ''}}">
+                                <i class="far fa-circle nav-icon"></i>
                                 <p>List Artikel</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{route('articles.create')}}" class="nav-link {{ Route::currentRouteName() === 'articles.create'? 'active' : ''}}">
-                                <i class="far fa-plus-square nav-icon"></i>
+                                <i class="far fa-circle nav-icon"></i>
                                 <p>Buat Artikel</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
+                <li class="nav-item has-treeview {{ $parentRoute[0] === 'categories'? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ $parentRoute[0] === 'categories'? 'active' : '' }}">
                         <i class="nav-icon fas fa-tag"></i>
                         <p>
                             Kategori
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview" style="display: none;">
+                    <ul class="nav nav-treeview bg-gray" style="display: {{$parentRoute[0] === 'categories' ? 'block;' : 'none;' }}">
                         <li class="nav-item">
-                            <a href="pages/UI/general.html" class="nav-link">
-                                <i class="far fa-list-alt nav-icon"></i>
+                            <a href="{{ route('categories.index') }}" class="nav-link {{ Route::currentRouteName() === 'categories.index'? 'active' : ''}}">
+                                <i class="far fa-circle nav-icon"></i>
                                 <p>List Kategori</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/general.html" class="nav-link">
-                                <i class="far fa-plus-square nav-icon"></i>
+                            <a href="{{ route('categories.create') }}" class="nav-link {{ Route::currentRouteName() === 'categories.create'? 'active' : ''}}">
+                                <i class="far fa-circle nav-icon"></i>
                                 <p>Tambah Kategori</p>
                             </a>
                         </li>
