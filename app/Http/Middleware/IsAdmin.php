@@ -18,7 +18,7 @@ class IsAdmin
         // $User = Auth::user();
         // $User = $request->user()->role_id;
         // // dd($User);
-        if($request->user()->role_id > 2) {
+        if($request->user()->role === 'user') {
             return \redirect('home');
         }
         // dd($request->user());

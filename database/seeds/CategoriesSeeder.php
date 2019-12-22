@@ -16,26 +16,31 @@ class CategoriesSeeder extends Seeder
             [
                 "name" => "News",
                 "slug" => "news",
+                "updated_at" => Carbon::now(),
                 "created_at" => Carbon::now(),
             ],
             [
                 "name" => "Sports",
                 "slug" => "sport",
+                "updated_at" => Carbon::now(),
                 "created_at" => Carbon::now(),
             ],
             [
                 "name" => "International",
                 "slug" => "international",
+                "updated_at" => Carbon::now(),
                 "created_at" => Carbon::now(),
             ],
             [
                 "name" => "Indonesian",
                 "slug" => "indonesian",
+                "updated_at" => Carbon::now(),
                 "created_at" => Carbon::now(),
             ],
             [
                 "name" => "Technology",
                 "slug" => "tech",
+                "updated_at" => Carbon::now(),
                 "created_at" => Carbon::now(),
             ]
         ]);

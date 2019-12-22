@@ -27,6 +27,7 @@ Route::get('admin', function() {
     return view('admin_template');
 });
 
+// Route admin group
 Route::prefix('admin')->group(function() {
     Route::resource('articles', 'ArticleController');
     Route::resource('categories', 'CategoryController');
@@ -34,6 +35,8 @@ Route::prefix('admin')->group(function() {
         'names' => 'admin.user'
     ]);
 });
+Route::get('/auth/redirect/{provider}', 'SocialController@redirect')->name('Socialite.redirect');
+Route::get('/callback/{provider}', 'SocialController@callback')->name('Socialite.callback');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

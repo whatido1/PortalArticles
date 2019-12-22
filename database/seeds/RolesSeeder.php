@@ -16,14 +16,17 @@ class RolesSeeder extends Seeder
         $Roles = collect([
             [
                 "role" => "admin",
+                "updated_at" => Carbon::now(),
                 "created_at" => Carbon::now(),
             ],
             [
                 "role" => "author",
+                "updated_at" => Carbon::now(),
                 "created_at" => Carbon::now(),
             ],
             [
                 "role" => "user",
+                "updated_at" => Carbon::now(),
                 "created_at" => Carbon::now(),
             ],
         ]);
