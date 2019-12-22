@@ -88,13 +88,13 @@ $parentRoute = explode('.' , $parentRoute);
                     </a>
                     <ul class="nav nav-treeview" style="display: none;">
                         <li class="nav-item">
-                            <a href="pages/UI/general.html" class="nav-link">
+                            <a href="{{ route('admin.user.index') }}" class="nav-link">
                                 <i class="far fa-list-alt nav-icon"></i>
                                 <p>List User</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/general.html" class="nav-link">
+                            <a href="{{ route('admin.user.create') }}" class="nav-link">
                                 <i class="far fa-plus-square nav-icon"></i>
                                 <p>Tambah User</p>
                             </a>

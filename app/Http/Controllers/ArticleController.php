@@ -72,8 +72,9 @@ class ArticleController extends Controller
 
 
         $Article = new Article();
-        $Article->title = Str::title($request->input('title'));
-        $Article->slug = Str::slug($request->input('slug'));
+        $formattedRequest = $this->formatRequestAll($request);
+        $Article->title = $formattedRequest['title'];
+        $Article->slug = $formattedRequest['slug'];
         $Article->thumbnail = str_replace('/', '\\', $path . "/200x_" . $originalBanner->getClientOriginalName());
         $Article->featured_image = str_replace('/', '\\', $path . "/". $originalBanner->getClientOriginalName());
         $Article->content = $request->input('content');
@@ -124,7 +125,7 @@ class ArticleController extends Controller
         //
         $Article = \App\Models\Article::where("slug", $slug)->firstOrFail();
         $oldTitle = $Article->title;
-        $Article->fill($request->all());
+        $Article->fill($this->formatRequestAll($request));
         $Article->category_id = $request->input('category');
         $Article->save();
 
@@ -145,5 +146,18 @@ class ArticleController extends Controller
         $Article->delete();
 
         return redirect()->back()->with(["success" => "Berhasil menghapus artikel <strong>{$title}</strong>"]);
+    }
+
+    /**
+     * Format request Article
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+    private function formatRequestAll($request) {
+        $formatted = $request->all();
+        $formatted['title'] = Str::title($request->title);
+        $formatted['slug'] = Str::slug($request->slug);
+
+        return $formatted;
     }
 }

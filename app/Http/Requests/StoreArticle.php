@@ -28,14 +28,23 @@ class StoreArticle extends FormRequest
     {
         $this->title = Str::title($this->title);
         $this->slug = Str::slug($this->slug);
-        // dd($this->request('slug'));
+        $method = $this->method();
+        
         return [
             'title' => 'required',
             'slug' => [
                 'required',
                 Rule::unique('\App\Models\Article', 'slug')->ignore($this->slug, 'slug')
             ],
-            'banner' => 'required_if:banner,image|image|mimes:jpeg,png,jpg',
+            'banner' => [
+                Rule::requiredIf(function() use ($method) {
+                    $noRequiredMethod = \collect(["PATCH", "PUT"]);
+                    return !$noRequiredMethod->contains($method);
+                }),
+                "image",
+                "mimes:jpeg,png,jpg"
+            ],
+            'required_if:banner,image|image|mimes:jpeg,png,jpg',
             'category' => 'required|numeric',
             'content' => 'required',
         ];

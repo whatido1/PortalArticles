@@ -30,6 +30,9 @@ Route::get('admin', function() {
 Route::prefix('admin')->group(function() {
     Route::resource('articles', 'ArticleController');
     Route::resource('categories', 'CategoryController');
+    Route::resource('user', 'UserController', [
+        'names' => 'admin.user'
+    ]);
 });
 Auth::routes();
 
