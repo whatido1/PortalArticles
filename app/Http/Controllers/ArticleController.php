@@ -16,8 +16,8 @@ class ArticleController extends Controller
     public function __construct()
     {
         // defining middleware to this controller
-        $this->middleware('auth');
-        $this->middleware('isAdmin');
+        $this->middleware('auth')->except('show');
+        $this->middleware('isAdmin')->except('show');
     }
     /**
      * Display a listing of the resource.
@@ -49,6 +49,19 @@ class ArticleController extends Controller
         ]);
     }
 
+    private function uploadImage($file, $path = '/uploads/featured') {
+        $originalBanner = $file;
+        $thumbBanner = Image::make($originalBanner->getRealPath())->resize('200', null, function( $constraint ) {
+            $constraint->aspectRatio();
+        });
+        $fileExt = $originalBanner->getClientOriginalExtension();
+        $destThumbPath = \public_path('/uploads/featured') ."/200x_". $originalBanner->getClientOriginalName();
+        $thumbBanner->save($destThumbPath);
+        Storage::disk('public')->put($path . '/' . $originalBanner->getClientOriginalName(), File::get($originalBanner));
+
+        return $originalBanner;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -58,25 +71,15 @@ class ArticleController extends Controller
     public function store(StoreArticle $request)
     {
 
-        $originalBanner = $request->file('banner');
-        $thumbBanner = Image::make($originalBanner->getRealPath())->resize('200', null, function( $constraint ) {
-            $constraint->aspectRatio();
-        });
-        $fileName = $request->input('banner');
-        $fileName = $request->validated();
-        $fileExt = $originalBanner->getClientOriginalExtension();
-        $destThumbPath = \public_path('/uploads/featured') ."/200x_". $originalBanner->getClientOriginalName();
         $path = '/uploads/featured';
-        $thumbBanner->save($destThumbPath);
-        Storage::disk('public')->put($path . '/' . $originalBanner->getClientOriginalName(), File::get($originalBanner));
-
+        $originalBanner = $this->uploadImage($request->file('banner'), $path);
 
         $Article = new Article();
         $formattedRequest = $this->formatRequestAll($request);
         $Article->title = $formattedRequest['title'];
         $Article->slug = $formattedRequest['slug'];
-        $Article->thumbnail = str_replace('/', '\\', $path . "/200x_" . $originalBanner->getClientOriginalName());
-        $Article->featured_image = str_replace('/', '\\', $path . "/". $originalBanner->getClientOriginalName());
+        $Article->thumbnail = $path . "/200x_" . $originalBanner->getClientOriginalName();
+        $Article->featured_image = $path . "/". $originalBanner->getClientOriginalName();
         $Article->content = $request->input('content');
         $Article->category_id = $request->input('category');
         $Article->user_id = Auth::id();
@@ -126,6 +129,12 @@ class ArticleController extends Controller
         $Article = \App\Models\Article::where("slug", $slug)->firstOrFail();
         $oldTitle = $Article->title;
         $Article->fill($this->formatRequestAll($request));
+        if($request->has('banner')) {
+            $path = "/uploads/featured";
+            $originalBanner = $this->uploadImage($request->file('banner'), $path);
+            $Article->thumbnail = $path . "/200x_" . $originalBanner->getClientOriginalName();
+            $Article->featured_image = $path . "/". $originalBanner->getClientOriginalName();
+        }
         $Article->category_id = $request->input('category');
         $Article->save();
 

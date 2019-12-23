@@ -15,11 +15,9 @@ class IsAdmin
      */
     public function handle($request, Closure $next)
     {
-        // $User = Auth::user();
-        // $User = $request->user()->role_id;
-        // // dd($User);
-        if($request->user()->role === 'user') {
-            return \redirect('home');
+        $User = $request->user();
+        if($request->user()->role->role === 'user') {
+            return \redirect('/');
         }
         // dd($request->user());
         return $next($request);

@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'provider', 'provider_id', 'role_id', 'email_verified_at', 'photo',
+        'name', 'email', 'password', 'provider', 'provider_id', 'role_id', 'email_verified_at', 'photo',
     ];
 
     /**
@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'remember_token',
     ];
 
     /**
@@ -38,6 +38,6 @@ class User extends Authenticatable
     ];
 
     public function role() {
-        return $this->belongsTo('App\Models\Role', 'id');
+        return $this->belongsTo('App\Models\Role', 'role_id');
     }
 }

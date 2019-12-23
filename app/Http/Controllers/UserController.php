@@ -2,10 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRegistRequest;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('isAdmin')->except('show');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,9 +49,18 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRegistRequest $request)
     {
         //
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role_id' => $request->role,
+        ]);
+
+        return \redirect()->route('admin.user.index')->with(['success' => "Berhasil menambahkan user <strong>{$user->name}</strong> sebagai role <strong>{$user->role->role}</strong>"]);
     }
 
     /**
@@ -53,7 +71,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**
@@ -64,7 +82,11 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('dashboard.admin.user.edit', [
+            "User" => User::findOrFail($id),
+            "Roles" => \App\Models\Role::all(),
+            "title" => "Edit User",
+        ]);
     }
 
     /**
@@ -74,11 +96,20 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRegistRequest $request, $id)
     {
         //
-    }
+        $User = User::find($id);
 
+        $User->email = $request->input('email');
+        $User->password = Hash::make($request->input('password'));
+        $User->role_id = $request->input('role');
+        $User->save();
+        return redirect()->route('admin.user.index')->with([
+            "success" => "Berhasil mengubah user"
+        ]);
+    }
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -88,5 +119,12 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+        $User = User::find($id);
+        $oldName = $User->email;
+        $User->delete();
+        
+        return redirect()->route('admin.user.index')->with([
+            "success" => "Berhasil menghapus user <strong>{$oldName}</strong>"
+        ]);
     }
 }

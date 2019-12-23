@@ -31,11 +31,14 @@ class SocialController extends Controller
 
         $user = $this->createUser($getInfo, $provider);
         auth()->login($user);
-        $user = Auth::user();
         if($user->role->role === 'user') {
-            return redirect()->to('/home');
+            return redirect()->route('home')->with([
+                "success" => "Berhasil Login"
+            ]);
         } else {
-            return \redirect()->route('article.index');
+            return \redirect()->route('articles.index')->with([
+                "success" => "Berhasil login"
+            ]);
         }
     }
 
@@ -49,7 +52,7 @@ class SocialController extends Controller
     private function createUser($getInfo, $provider)
     {
         $user = User::where('provider_id', $getInfo->id)->first();
-
+        
         if(! $user) {
             $user = User::create([
                 'name' => $getInfo->name,

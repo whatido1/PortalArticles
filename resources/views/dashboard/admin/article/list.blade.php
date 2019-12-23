@@ -29,7 +29,7 @@
                     <td>{{ $Article->created_at }}</td>
                     <td>
                         <div class="input-group">
-                            <a href="{{ route('articles.show', ['article' => $Article->slug]) }}"
+                            <a href="{{ route('article.show', [$Article->category->slug, $Article->slug]) }}"
                                 class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>
                             <a href="{{ route('articles.edit', ['article' => $Article->slug]) }}"
                                 class="btn btn-sm btn-success"><i class="fa fa-pen"></i></a>

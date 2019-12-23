@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCategory;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -111,6 +112,21 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
+        $Category = \App\Models\Category::find($id);
+        $oldName = $Category->name;
+
+        try {
+            $Category->delete();
+
+            return redirect()->route('categories.index')->with([
+                "success" => "Berhasil menghapus category <strong>{$oldName}</strong>"
+            ]);
+        }catch(QueryException $queryException) {
+            return redirect()->route('categories.index')->with([
+                "error" => "Gagal menghapus category <strong>{$oldName}</strong> <br> {$queryException->getMessage()}"
+            ]);
+        }
+        
     }
 
     /**

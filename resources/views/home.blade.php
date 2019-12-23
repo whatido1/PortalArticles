@@ -1,23 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="jumbotron">
+    <h1 class="display-4">Hello, world!</h1>
+    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+    <hr class="my-4">
+    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+</div>
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-
+    <div class="row">
+        <div class="col-sm-3">
+            <select name="" onchange="window.location.replace(document.getElementById('selectCategory').value)" id="selectCategory" class="form-control">
+                <option value="/" {{ isset($Category) ? '' : 'selected' }}>-Pilih Category-</option>
+                @foreach($Categories as $category)
+                <option value="{{ $category->slug }}" {{ isset($Category) && $Category->id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        @foreach($Articles as $Article)
+        <div class="col-sm-3">
+            <div class="card mt-4">
+                <a href="{{ route('article.show', [$Article->category->slug ,$Article->slug]) }}">
+                    <img src="{{ asset($Article->thumbnail) }}" class="card-img-top" alt="{{ $Article->title }}">
+                </a>
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
+                    <h4>{{ $Article->title }}</h4>
                 </div>
             </div>
         </div>
+        @endforeach
+    </div>
+    <div class="row justify-content-center">
+        {{ $Articles->links() }}
     </div>
 </div>
 @endsection

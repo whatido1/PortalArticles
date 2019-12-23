@@ -21,7 +21,7 @@
             <div class="card-body">
                 @if(isset($Article))
                 <div class="form-group text-center">
-                    <img src="{{ $Article->thumbnail }}">
+                    <img src="{{ asset($Article->thumbnail) }}">
                 </div>
                 @endif
                 <div class="form-group">
@@ -37,9 +37,6 @@
                                 name="banner">
                             <label class="custom-file-label overflow-hidden" for="fileBanner"> {{ old('banner') ? old('banner') : isset($Article)? $Article->featured_image : 'Pilih Banner' }} </label>
                         </div>
-                        {{-- <div class="input-group-append">
-                                <span class="input-group-text" id="">Upload</span>
-                            </div> --}}
                     </div>
                 </div>
                 <div class="form-group">

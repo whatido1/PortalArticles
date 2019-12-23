@@ -17,14 +17,14 @@ class CreateArticlesTable extends Migration
             $table->bigIncrements('id');
             $table->string('title')->unique();
             $table->string('slug')->unique();
-            $table->string("thumbnail")->nullable();
-            $table->string("featured_image")->nullable();
+            $table->string("thumbnail")->default("images/placeholder/200_xplaceholder-image.png");
+            $table->string("featured_image")->default("images/placeholder/placeholder-image.png");
             $table->text("content");
             $table->bigInteger("user_id")->unsigned();
             $table->mediumInteger('category_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete("cascade");
             $table->foreign('category_id')->references('id')->on('category');
         });
     }

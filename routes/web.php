@@ -11,21 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-// Route::get('/admin', function() {
-//     return view('admin');
-// });
-
-// Route::prefix('admin', function() {
-//     Route::resource('articles', 'ArticleController');
-// });
-
-Route::get('admin', function() {
-    return view('admin_template');
-});
+Auth::routes();
+Route::get('/auth/redirect/{provider}', 'SocialController@redirect')->name('Socialite.redirect');
+Route::get('/callback/{provider}', 'SocialController@callback')->name('Socialite.callback');
 
 // Route admin group
 Route::prefix('admin')->group(function() {
@@ -33,10 +21,14 @@ Route::prefix('admin')->group(function() {
     Route::resource('categories', 'CategoryController');
     Route::resource('user', 'UserController', [
         'names' => 'admin.user'
-    ]);
+    ])->except('show');
 });
-Route::get('/auth/redirect/{provider}', 'SocialController@redirect')->name('Socialite.redirect');
-Route::get('/callback/{provider}', 'SocialController@callback')->name('Socialite.callback');
-Auth::routes();
+Route::resource('user', 'UserIndividuController', [
+    "names" => 'user'
+])->only('show','edit','update');
+Route::get('/{category}', 'Front\ArticleController@category')->name('article.category');
+Route::get('/{category}/{slug}', 'Front\ArticleController@show')->name('article.show');
 
-Route::get('/home', 'HomeController@index')->name('home');
+
+
+Route::get('/', 'HomeController@index')->name('home');

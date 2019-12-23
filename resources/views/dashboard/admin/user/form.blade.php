@@ -12,7 +12,7 @@
                 </div>
                 <div class="form-group">
                     <label for="textPassword">Password</label>
-                    <input type="password" class="form-control" value="{{ old('password', (isset($User)? $User->password : '')) }}" placeholder="Password" name="password" id="textPassword">
+                    <input type="password" class="form-control" value="" placeholder="Password" name="password" id="textPassword">
                 </div>
                 <div class="form-group">
                     <label for="textRePassword">Re-Password</label>
@@ -23,9 +23,9 @@
                         <div class="form-group">
                             <label for="selectRole">Role</label>
                             <select name="role" id="selectRole" class="form-control">
-                                <option disabled selected>-Pilih Role-</option>
+                                <option disabled {{ old('role') || isset($User) ? '' : 'selected' }}>-Pilih Role-</option>
                                 @foreach($Roles as $role)
-                                <option value="{{ $role->id }}">{{$role->role}}</option>
+                                <option value="{{ $role->id }}" {{ old('role', (isset($User)? $User->role_id : '')) == $role->id ? 'selected' : ''  }}>{{$role->role}}</option>
                                 @endforeach
                             </select>
                         </div>

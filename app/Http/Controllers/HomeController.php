@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -23,6 +23,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        return view('home', [
+            "Articles" => \App\Models\Article::orderBy('created_at', 'desc')->paginate(5),
+            "Title" => "Home Blog",
+            "Categories" => \App\Models\Category::all(),
+        ]);
     }
 }

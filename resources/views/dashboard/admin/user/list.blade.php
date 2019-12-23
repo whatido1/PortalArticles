@@ -25,14 +25,12 @@
                 <tr>
                     <td>{{ $User->name }}</td>
                     <td>{{ $User->email }}</td>
-                    <td>{{ $User->updated_at }}</td>
+                    <td>{!! !empty($User->provider)? $User->provider : 'normal' !!}</td>
                     <td>{{ $User->role->role }}</td>
                     <td>{{ $User->updated_at }}</td>
                     <td>{{ $User->created_at }}</td>
                     <td>
                         <div class="input-group">
-                            <a href="{{ route('admin.user.show', ['user' => $User->id]) }}"
-                                class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>
                             <a href="{{ route('admin.user.edit', ['user' => $User->id]) }}"
                                 class="btn btn-sm btn-success"><i class="fa fa-pen"></i></a>
                             <form class="formDelete" action="{{ route('admin.user.destroy', [$User->id])}}" method="POST">
